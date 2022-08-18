@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 
-internal sealed class Controllers : ICleanup, IExecute, IInitialization
+internal sealed class Controllers : ICleanup, IExecute, IPhysicsExecute, IInitialization
 {
     private readonly List<ICleanup> _cleanupControllers;
     private readonly List<IExecute> _executeControllers;
+    private readonly List<IPhysicsExecute> _physicsExecutesControllers;
     private readonly List<IInitialization> _initializeControllers;
 
     internal Controllers()
@@ -23,6 +24,11 @@ internal sealed class Controllers : ICleanup, IExecute, IInitialization
         if (controller is IExecute executeController)
         {
             _executeControllers.Add(executeController);
+        }
+
+        if(controller is IPhysicsExecute physicsExecute)
+        {
+            _physicsExecutesControllers.Add(physicsExecute);
         }
 
         if (controller is IInitialization initializationController)
@@ -46,6 +52,14 @@ internal sealed class Controllers : ICleanup, IExecute, IInitialization
         for (var index = 0; index < _executeControllers.Count; ++index)
         {
             _executeControllers[index].Execute(deltaTime);
+        }
+    }
+
+    public void PhysicsExecute()
+    {
+        for (var index = 0; index < _physicsExecutesControllers.Count; ++index)
+        {
+            _physicsExecutesControllers[index].PhysicsExecute();
         }
     }
 
